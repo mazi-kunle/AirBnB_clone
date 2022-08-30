@@ -1,4 +1,5 @@
 #!/usr/bin/python3
-'''This is a test file thst passes the pycodestyle test'''
+'''This is a test file that passes the pycodestyle test'''
 
-print("Hello World")
+if __name__ == '__main__':
+    print("Hello World")
