@@ -33,16 +33,12 @@ class FileStorage:
                 new_dict[key] = value
 
         FileStorage.__objects['BaseModel.'+obj.id] = new_dict
-        # print('BaseModel.'+obj.id)
-        # print(new_dict)
     
     def save(self):
         """
         serializes data and save to JSON file
         """
-        # print('file', type(FileStorage.__objects))
         serialized = json.dumps(FileStorage.__objects)
-        # print('serialized', serialized)
         with open(FileStorage.__file_path, 'w') as json_file:
             json_file.write(serialized)
 
@@ -52,5 +48,4 @@ class FileStorage:
         """
         if path.exists(FileStorage.__file_path):
             with open(FileStorage.__file_path, 'r') as open_file:
-                # print(data)
                 FileStorage.__objects = json.load(open_file)
