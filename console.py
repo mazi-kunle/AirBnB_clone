@@ -4,6 +4,9 @@
 import cmd
 from models.base_model import BaseModel
 from models import storage
+from models.user import User
+
+classes = {'BaseModel': BaseModel, 'User': User}
 
 
 class HBNBCommand(cmd.Cmd):
@@ -18,11 +21,11 @@ class HBNBCommand(cmd.Cmd):
         if len(line) == 0:
             print('** class name missing **')
 
-        elif line != 'BaseModel':
+        elif line not in classes:
             print("** class doesn't exist **")
 
         else:
-            newInstance = BaseModel()
+            newInstance = classes[line]()
             newInstance.save()
             print(newInstance.id)
 
@@ -36,7 +39,7 @@ class HBNBCommand(cmd.Cmd):
             return
 
         data = line.partition(' ')
-        if data[0] != 'BaseModel':
+        if data[0] not in classes:
             print("** class doesn't exist **")
             return
 
@@ -66,7 +69,7 @@ class HBNBCommand(cmd.Cmd):
         _cls = data[0]
         _id = data[2]
 
-        if _cls != 'BaseModel':
+        if _cls not in classes:
             print("** class doesn't exist **")
             return
 
@@ -89,7 +92,7 @@ class HBNBCommand(cmd.Cmd):
         based or not on the class name.
         '''
 
-        if line != 'BaseModel' and len(line) != 0:
+        if line not in classes and len(line) != 0:
             print("** class doesn't exist **")
             return
 
@@ -112,7 +115,7 @@ class HBNBCommand(cmd.Cmd):
 
         data = line.split(' ')
         # check if class exist
-        if data[0] != 'BaseModel':
+        if data[0] not in classes:
             print("** class doesn't exist **")
             return
 

@@ -4,6 +4,9 @@
 import json
 from os.path import exists as file_exists
 from models.base_model import BaseModel
+from models.user import User
+
+classes = {'BaseModel': BaseModel, 'User': User}
 
 
 class FileStorage:
@@ -52,6 +55,7 @@ class FileStorage:
         # check if file exists
         if (file_exists(self.__file_path)):
             with open(self.__file_path, 'r') as f:
-                json_object = json.load(f)
-            for key in json_object:
-                self.__objects[key] = BaseModel(**json_object[key])
+                json_obj = json.load(f)
+            for key in json_obj:
+                self.__objects[key] = \
+                        classes[json_obj[key]['__class__']](**json_obj[key])

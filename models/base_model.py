@@ -32,7 +32,7 @@ class BaseModel:
         '''
         A custom __str__ method
         '''
-        return f'[BaseModel] ({self.id}) {self.__dict__}'
+        return f'[{type(self).__name__}] ({self.id}) {self.__dict__}'
 
     def save(self):
         '''
@@ -56,6 +56,6 @@ class BaseModel:
             else:
                 new_dict[key] = value
 
-        new_dict['__class__'] = 'BaseModel'
+        new_dict['__class__'] = str(type(self).__name__)
 
         return new_dict
