@@ -20,4 +20,7 @@ class TestBaseModel(unittest.TestCase):
         self.assertTrue(type(my_model.id), str)
         self.assertTrue(type(my_model.created_at), datetime)
         self.assertTrue(type(my_model.updated_at), datetime)
+        self.assertEqual(my_model.updated_at.year, my_model.created_at.year)
+        self.assertEqual(my_model.updated_at.month, my_model.created_at.month)
+        self.assertEqual(my_model.updated_at.day, my_model.created_at.day)
         self.assertEqual(my_model.updated_at.hour, my_model.created_at.hour)
