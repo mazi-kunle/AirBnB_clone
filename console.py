@@ -50,6 +50,11 @@ class HBNBCommand(cmd.Cmd):
             _id = line[start + 2:end - 1]
             cmd = f'{command} {_cls} {_id}'
 
+        elif command == 'update':
+            data = eval(line[line.find('('):line.find(')')+1])
+            _id, attr_name, attr_val = data
+            cmd = f'{command} {_cls} {_id} {attr_name} "{attr_val}"'
+
         else:
             cmd = f'{command} {_cls}'
 
