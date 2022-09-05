@@ -42,7 +42,16 @@ class HBNBCommand(cmd.Cmd):
         # <class name>.count()
         # command = count
         command = line[line.find('.') + 1:line.find('(')]
-        cmd = f'{command} {_cls}'
+
+        # if command == show, extract the id from line
+        if command == 'show':
+            start = line.find('(')
+            end = line.find(')')
+            _id = line[start + 2:end - 1]
+            cmd = f'{command} {_cls} {_id}'
+
+        else:
+            cmd = f'{command} {_cls}'
 
         return cmd
 
