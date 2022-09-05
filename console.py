@@ -36,6 +36,7 @@ class HBNBCommand(cmd.Cmd):
         if not ('.' in line and '(' in line and ')' in line):
             return line
 
+        # extract class name
         _cls = line.split('.')[0]
 
         # extract the command from line e.g
@@ -43,7 +44,7 @@ class HBNBCommand(cmd.Cmd):
         # command = count
         command = line[line.find('.') + 1:line.find('(')]
 
-        # if command == show, extract the id from line
+        # extract details from line
         if command in ['show', 'destroy']:
             start = line.find('(')
             end = line.find(')')
@@ -52,8 +53,19 @@ class HBNBCommand(cmd.Cmd):
 
         elif command == 'update':
             data = eval(line[line.find('('):line.find(')')+1])
-            _id, attr_name, attr_val = data
-            cmd = f'{command} {_cls} {_id} {attr_name} "{attr_val}"'
+
+            if type(data[1]) == dict:
+                _id, attr_dict = data
+
+                for key, value in attr_dict.items():
+                    attr_name = key
+                    attr_val = value
+                    cmd = _cls + ' ' + _id + ' ' + attr_name + ' ' + str(attr_val)
+                    self.do_update(cmd)
+
+            else:
+                _id, attr_name, attr_val = data
+                cmd = f'{command} {_cls} {_id} {attr_name} "{attr_val}"'
 
         else:
             cmd = f'{command} {_cls}'
@@ -213,7 +225,11 @@ class HBNBCommand(cmd.Cmd):
             instance_dict[attribute_name] = attribute_value
 
         except KeyError:
-            instance_dict[attribute_name] = eval(attribute_value)
+            if eval(attribute_value).isdigit():
+                instance_dict[attribute_name] = int(eval(attribute_value))
+            
+            else:
+                instance_dict[attribute_name] = eval(attribute_value)
 
         finally:
             # save the updated instance.
