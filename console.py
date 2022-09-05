@@ -28,6 +28,19 @@ class HBNBCommand(cmd.Cmd):
     '''
     prompt = '(hbnb) '
 
+    def precmd(self, line):
+        '''
+        retrive all instances of a class by using: <class name>.all()
+        '''
+        # run only commands that has '.', '(', and ')'
+        if not ('.' in line and '(' in line and ')' in line):
+            return line
+
+        _cls = line.split('.')[0]
+        command = f'all {_cls}'
+
+        return command
+
     def do_create(self, line):
         '''Create a new instance of BaseModel'''
 
@@ -111,8 +124,15 @@ class HBNBCommand(cmd.Cmd):
 
         _list = []
 
-        for key, value in storage.all().items():
-            _list.append(str(value))
+        if line:
+            line = line.split(' ')[0]
+            for key, value in storage.all().items():
+                if key.split('.')[0] == line:
+                    _list.append(str(value))
+
+        else:
+            for key, value in storage.all().items():
+                _list.append(str(value))
 
         print(_list)
 
