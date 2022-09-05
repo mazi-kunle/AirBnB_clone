@@ -44,7 +44,7 @@ class HBNBCommand(cmd.Cmd):
         command = line[line.find('.') + 1:line.find('(')]
 
         # if command == show, extract the id from line
-        if command == 'show':
+        if command in ['show', 'destroy']:
             start = line.find('(')
             end = line.find(')')
             _id = line[start + 2:end - 1]
