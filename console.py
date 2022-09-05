@@ -182,7 +182,7 @@ class HBNBCommand(cmd.Cmd):
 
         except KeyError:
             if eval(attribute_value).isdigit():
-                instance_dict[attribute_name] = int(eval(attribute_value)
+                instance_dict[attribute_name] = int(eval(attribute_value))
 
             else:
                 instance_dict[attribute_name] = eval(attribute_value)
