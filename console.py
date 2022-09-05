@@ -37,9 +37,14 @@ class HBNBCommand(cmd.Cmd):
             return line
 
         _cls = line.split('.')[0]
-        command = f'all {_cls}'
 
-        return command
+        # extract the command from line e.g
+        # <class name>.count()
+        # command = count
+        command = line[line.find('.') + 1:line.find('(')]
+        cmd = f'{command} {_cls}'
+
+        return cmd
 
     def do_create(self, line):
         '''Create a new instance of BaseModel'''
@@ -199,6 +204,18 @@ class HBNBCommand(cmd.Cmd):
         finally:
             # save the updated instance.
             instance.save()
+
+    def do_count(self, line):
+        '''
+        retrieve the number of instances of a class
+        '''
+        count = 0
+
+        for key, value in storage.all().items():
+            if (line == key.split('.')[0]):
+                count += 1
+
+        print(count)
 
     def do_quit(self, line):
         '''Quit command to exit the program'''
