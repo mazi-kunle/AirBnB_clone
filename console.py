@@ -29,7 +29,7 @@ class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) '
 
     def do_create(self, line):
-        '''Create a new instance of BaseModel'''
+        '''Create a new instance of a class'''
 
         if len(line) == 0:
             print('** class name missing **')
@@ -111,8 +111,15 @@ class HBNBCommand(cmd.Cmd):
 
         _list = []
 
-        for key, value in storage.all().items():
-            _list.append(str(value))
+        if line:
+            line = line.split(' ')[0]
+            for key, value in storage.all().items():
+                if key.split('.')[0] == line:
+                    _list.append(str(value))
+
+        else:
+            for key, value in storage.all().items():
+                _list.append(str(value))
 
         print(_list)
 
@@ -174,11 +181,27 @@ class HBNBCommand(cmd.Cmd):
             instance_dict[attribute_name] = attribute_value
 
         except KeyError:
-            instance_dict[attribute_name] = eval(attribute_value)
+            if eval(attribute_value).isdigit():
+                instance_dict[attribute_name] = int(eval(attribute_value))
+
+            else:
+                instance_dict[attribute_name] = eval(attribute_value)
 
         finally:
             # save the updated instance.
             instance.save()
+
+    def do_count(self, line):
+        '''
+        retrieve the number of instances of a class
+        '''
+        count = 0
+
+        for key, value in storage.all().items():
+            if (line == key.split('.')[0]):
+                count += 1
+
+        print(count)
 
     def do_quit(self, line):
         '''Quit command to exit the program'''
@@ -193,6 +216,63 @@ class HBNBCommand(cmd.Cmd):
 
     def emptyline(self):
         pass
+
+    def default(self, line):
+        '''
+        retrive all instances of a class by using: <class name>.all()
+        '''
+        commands = {
+                'all': self.do_all,
+                'count': self.do_count,
+                'show': self.do_show,
+                'destroy': self.do_destroy,
+                'update': self.do_update
+                }
+        # run only commands that has '.', '(', and ')'
+        if not ('.' in line and '(' in line and ')' in line):
+            super().default(line)
+            return
+
+        # extract class name
+        _cls = line.split('.')[0]
+
+        # extract the command from line e.g
+        # <class name>.count()
+        # command = count
+        command = line[line.find('.') + 1:line.find('(')]
+
+        if command not in commands.keys():
+            super().default(line)
+            return
+
+        # extract details from line
+        if command in ['show', 'destroy']:
+            start = line.find('(')
+            end = line.find(')')
+            _id = line[start + 2:end - 1]
+            cmd = f'{_cls} {_id}'
+
+        elif command == 'update':
+            data = eval(line[line.find('('):line.find(')')+1])
+
+            if type(data[1]) == dict:
+                _id, attr_dict = data
+
+                for key, value in attr_dict.items():
+                    attr_name = key
+                    attr_val = value
+                    cmd = f'{_cls} {_id} {attr_name} "{attr_val}"'
+                    commands[command](cmd)
+
+                return
+
+            else:
+                _id, attr_name, attr_val = data
+                cmd = f'{_cls} {_id} {attr_name} "{attr_val}"'
+
+        else:
+            cmd = f'{_cls}'
+        commands[command](cmd)
 
 
 if __name__ == '__main__':
